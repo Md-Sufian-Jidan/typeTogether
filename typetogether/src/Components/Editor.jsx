@@ -7,6 +7,10 @@ import "quill/dist/quill.snow.css";
 
 import styled from '@emotion/styled';
 
+import { io } from "socket.io-client";
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 const Component = styled.div`
 background: #f5f5f5`
 
@@ -32,6 +36,9 @@ const toolbarOptions = [
 ];
 
 const Editor = () => {
+    const [socket, setSocket] = useState();
+    const [quill, setQuill] = useState();
+    const { id } = useParams();
 
     useEffect(() => {
         const quillServer = new Quill('#container',
@@ -39,14 +46,57 @@ const Editor = () => {
                 theme: 'snow',
                 modules: { toolbar: toolbarOptions }
             });
-    }, [])
+        quillServer.disable();
+        quillServer.setText('Loading Document');
+        setQuill(quillServer);
+    }, []);
+
+    useEffect(() => {
+        const socketServer = io("http://localhost:7000");
+        setSocket(socketServer)
+        return () => {
+            socketServer.disconnect();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (socket === null || quill === null) return;
+        const handleChange = (delta, oldData, source) => {
+            if (source !== 'user') return;
+            socket && socket.emit('send-changes', delta);
+        }
+        quill && quill.on("text-change", handleChange)
+        return () => {
+            quill && quill.off("text-change", handleChange);
+        }
+    }, [quill, socket]);
+
+    useEffect(() => {
+        if (socket === null || quill === null) return;
+        const handleChange = (delta) => {
+            quill.updateContents(delta);
+        }
+        socket && socket.on("receive-changes", handleChange)
+        return () => {
+            socket && socket.off("receive-changes", handleChange);
+        }
+    }, [quill, socket]);
+
+    useEffect(() => {
+        if (socket === null || quill === null) return;
+        socket && socket.once('load-document', document => {
+            quill && quill.setContents(document)
+            quill && quill.enable();
+        })
+
+        socket && socket.emit('get-document', id);
+
+    }, [quill, socket, id]);
 
     return (
         <Component>
-
             <Box className='container' id='container' component="section" sx={{ p: 2, border: '1px dashed grey' }}>
             </Box>
-
         </Component>
     );
 };
