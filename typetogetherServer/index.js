@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { Connection } from "./database/db.js";
-import { getDocument, updateDocument } from "./controller/document-controller.js";
+import { getDocument, updateDocument } from "./controller/docController.js";
+
 
 const PORT = 7000;
 
@@ -18,7 +19,7 @@ const io = new Server(PORT, {
 
 io.on("connection", socket => {
     socket.on("get-document", documentId => {
-        const document = getDocument(documentId);
+        const document = getDocument(documentId)
         socket.join(documentId);
         socket.emit("load-document", document.data);
 
