@@ -1,15 +1,23 @@
-import Document from "../schema/docSchema";
+import Document from "../schema/docSchema.js";
 
 export const getDocument = async (id) => {
-    if (id === null) return;
-    const readyDocument = await Document.findById(id);
+    if (!id) return null;
 
-    if (readyDocument) return Document;
+    const document = await Document.findById(id);
+
+    if (document) return document;
 
     return await Document.create({ _id: id, data: "" });
+    ;
 };
 
 export const updateDocument = async (id, data) => {
-    return await Document.findByIdAndUpdate(id, { data });
-}
+    if (!id) return null;
+
+    return await Document.findByIdAndUpdate(
+        id,
+        { data },
+        { new: true }
+    );
+};
 

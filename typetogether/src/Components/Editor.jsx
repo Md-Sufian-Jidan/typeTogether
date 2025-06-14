@@ -93,6 +93,19 @@ const Editor = () => {
 
     }, [quill, socket, id]);
 
+    useEffect(() => {
+        if (socket === null || quill === null) return;
+
+        const interval = setInterval(() => {
+            socket.emit('save-document', quill.getContents());
+        }, 2000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [quill, socket]);
+
+
     return (
         <Component>
             <Box className='container' id='container' component="section" sx={{ p: 2, border: '1px dashed grey' }}>

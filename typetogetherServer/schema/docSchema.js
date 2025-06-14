@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 
-const schema = new mongoose.Schema({
+const DocumentSchema = new mongoose.Schema({
     _id: {
         type: String,
-        required: true
+        required: true,
     },
     data: {
         type: Object,
-        required: true
+        required: true,
     },
 });
 
-const Document = mongoose.model('document', schema);
+const Document = mongoose.models.Document || mongoose.model("Document", DocumentSchema);
 
 export default Document;

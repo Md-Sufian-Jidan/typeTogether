@@ -18,10 +18,17 @@ const io = new Server(PORT, {
 });
 
 io.on("connection", socket => {
-    socket.on("get-document", documentId => {
-        const document = getDocument(documentId)
+    console.log("New client connected:", socket.id);
+
+    socket.on("get-document", async (documentId) => {
+        if (!documentId) return;
+
+        const document = await getDocument(documentId);
         socket.join(documentId);
         socket.emit("load-document", document.data);
+
+        socket.removeAllListeners("send-changes");
+        socket.removeAllListeners("save-document");
 
         socket.on("send-changes", delta => {
             socket.broadcast.to(documentId).emit("receive-changes", delta);
@@ -31,4 +38,10 @@ io.on("connection", socket => {
             await updateDocument(documentId, data);
         });
     });
+
+    socket.on("disconnect", () => {
+        console.log("Client disconnected:", socket.id);
+    });
 });
+
+
