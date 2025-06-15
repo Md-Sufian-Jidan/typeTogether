@@ -11,13 +11,19 @@ export const getDocument = async (id) => {
     ;
 };
 
-export const updateDocument = async (id, data) => {
-    if (!id) return null;
 
-    return await Document.findByIdAndUpdate(
-        id,
-        { data },
-        { new: true }
-    );
+export const updateDocument = async (id, content, user) => {
+    if (!id) throw new Error("Document ID required");
+
+    const filter = { _id: id };
+    const update = {
+        name: user.name,
+        email: user.email,
+        data: content,
+    };
+    const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+    const updatedDoc = await Document.findOneAndUpdate(filter, update, options);
+    return updatedDoc;
 };
 

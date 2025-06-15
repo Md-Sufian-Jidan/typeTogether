@@ -15,6 +15,7 @@
     "@mui/icons-material": "^7.1.1",
     "@mui/material": "^7.1.1",
     "@mui/styled-engine-sc": "^7.1.1",
+    "axios": "^1.10.0",
     "firebase": "^11.9.1",
     "framer-motion": "^12.18.1",
     "localforage": "^1.10.0",
@@ -31,6 +32,7 @@
     "socket.io-client": "^4.8.1",
     "sort-by": "^1.2.0",
     "styled-components": "^6.1.19",
+    "sweetalert2": "^11.22.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

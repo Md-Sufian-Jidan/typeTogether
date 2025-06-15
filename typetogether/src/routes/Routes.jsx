@@ -1,19 +1,24 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
 import PrivateRoute from "./PrivateRoute";
 import Error from "../Error/Error";
 import Login from "../Components/Login";
 import Dashboard from "../Components/Dashboard";
+import Editor from "../Components/Editor";
+import MyDocs from "../Components/MyDocs";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <PrivateRoute><App /></PrivateRoute>,
+        element: <PrivateRoute><Dashboard /></PrivateRoute>,
         errorElement: <Error />,
     },
     {
-        path: '/dashboard',
-        element: <Dashboard />
+        path: "/docs/:id",
+        element: <Editor />
+    },
+    {
+        path: "/my-docs",
+        element: <MyDocs />
     },
     {
         path: '/login',

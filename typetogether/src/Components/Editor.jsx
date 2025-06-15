@@ -10,6 +10,8 @@ import styled from '@emotion/styled';
 import { io } from "socket.io-client";
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../Context/AuthProvider';
 
 const Component = styled.div`
 background: #f5f5f5`
@@ -39,6 +41,7 @@ const Editor = () => {
     const [socket, setSocket] = useState();
     const [quill, setQuill] = useState();
     const { id } = useParams();
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         const quillServer = new Quill('#container',
@@ -95,15 +98,24 @@ const Editor = () => {
 
     useEffect(() => {
         if (socket === null || quill === null) return;
+        const userInformation = {
+            name: user?.displayName,
+            email: user?.email
+        };
+
+        const saveContent = () => {
+            socket.emit('save-document', {
+                content: quill.getContents(),
+                user: userInformation,
+            });
+        };
 
         const interval = setInterval(() => {
-            socket.emit('save-document', quill.getContents());
+            saveContent();
         }, 2000);
 
-        return () => {
-            clearInterval(interval);
-        };
-    }, [quill, socket]);
+        return () => clearInterval(interval)
+    }, [quill, socket, id,user]);
 
 
     return (

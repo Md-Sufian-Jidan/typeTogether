@@ -18,25 +18,23 @@ const Login = () => {
     } = useForm();
     const navigate = useNavigate();
 
-    const { signIn, createUser } = useContext(AuthContext);
+    const { signIn, createUser, googleSignIn } = useContext(AuthContext);
 
     const onSubmit = async (data) => {
         try {
             if (isRegistering) {
-                // Register logic
                 const res = await createUser(data.email, data.password);
-                console.log(res);
-                if (res.data.success) {
-                    updateProfile(auth.currentUser, {
-                        displayName: data.name,
-                    });
+                if (res) {
+                    await updateProfile(auth.currentUser, {
+                        displayName: data.fullName,
+                    })
                     reset();
-                    navigate('/login');
                     toast.success('Registration Successful!');
+                    setIsRegistering(false);
                 }
             } else {
                 const res = await signIn(data.email, data.password);
-                navigate('/dashboard');
+                navigate('/');
                 toast.success('Login Successful!');
             }
         } catch (err) {
@@ -47,7 +45,11 @@ const Login = () => {
 
     const onGoogleLogin = () => {
         console.log("Redirecting to Google login...");
-        // Handle Google OAuth
+        googleSignIn()
+            .then(res => {
+                navigate('/');
+                return toast.success(isRegistering ? 'Register Successfully' : 'Login Successfully');
+            })
     };
 
     return (
