@@ -55,7 +55,7 @@ const Editor = () => {
     }, []);
 
     useEffect(() => {
-        const socketServer = io("http://localhost:7000");
+        const socketServer = io(`${import.meta.env.VITE_SERVERAPI}`);
         setSocket(socketServer)
         return () => {
             socketServer.disconnect();
@@ -92,9 +92,15 @@ const Editor = () => {
             quill && quill.enable();
         })
 
-        socket && socket.emit('get-document', id);
+        socket && socket.emit('get-document', {
+            documentId: id,
+            user: {
+                name: user?.displayName,
+                email: user?.email,
+            },
+        });
 
-    }, [quill, socket, id]);
+    }, [quill, socket, id, user]);
 
     useEffect(() => {
         if (socket === null || quill === null) return;
@@ -115,12 +121,12 @@ const Editor = () => {
         }, 2000);
 
         return () => clearInterval(interval)
-    }, [quill, socket, id,user]);
+    }, [quill, socket, id, user]);
 
 
     return (
         <Component>
-            <Box className='container' id='container' component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+            <Box className='w-full bg-white bg-opacity-10 shadow-[0_0_5px_rgba(0,0,0,0.5)] min-h-screen' id='container' component="section" sx={{ p: 2, border: '1px dashed grey' }}>
             </Box>
         </Component>
     );

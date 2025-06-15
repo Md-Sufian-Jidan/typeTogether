@@ -1,14 +1,17 @@
 import Document from "../schema/docSchema.js";
 
-export const getDocument = async (id) => {
+export const getDocument = async (id, user) => {
     if (!id) return null;
 
     const document = await Document.findById(id);
-
     if (document) return document;
 
-    return await Document.create({ _id: id, data: "" });
-    ;
+    await Document.create({
+        _id: id,
+        data: "",
+        email: user?.email,
+        name: user?.name,
+    });
 };
 
 

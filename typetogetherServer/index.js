@@ -8,15 +8,15 @@ import { getDocument, updateDocument } from "./controller/docController.js";
 import Document from "./schema/docSchema.js";
 
 const app = express();
-const PORT = 7000;
+const port = process.env.PORT || 7000;
 
 Connection();
 
 // middlewares
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: ['http://localhost:5173', 'https://typetogether-six.vercel.app/'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
 
@@ -36,7 +36,6 @@ app.get("/documents", async (req, res) => {
 
 app.delete("/documents/:id", async (req, res) => {
     const { id } = req.params;
-
     try {
         await Document.findByIdAndDelete(id);
         return res.status(200).json({ message: "Document deleted successfully" });
@@ -51,7 +50,7 @@ const server = http.createServer(app);
 // Socket.IO setup
 const io = new Server(server, {
     cors: {
-        origin: ['http://localhost:5173', 'http://localhost:5174'],
+        origin: ['http://localhost:5173', 'https://typetogether-six.vercel.app/'],
         methods: ['GET', 'POST', 'PUT', 'DELETE']
     }
 });
@@ -60,10 +59,10 @@ const io = new Server(server, {
 io.on("connection", socket => {
     console.log("New client connected");
 
-    socket.on("get-document", async (documentId) => {
-        if (!documentId) return;
+    socket.on("get-document", async ({ documentId, user }) => {
+        if (!documentId || !user) return;
 
-        const document = await getDocument(documentId);
+        const document = await getDocument(documentId, user);
         socket.join(documentId);
         socket.emit("load-document", document.data);
 
@@ -79,6 +78,7 @@ io.on("connection", socket => {
         // Save content
         socket.on("save-document", async ({ content, user }) => {
             try {
+                console.log(user);
                 await updateDocument(documentId, content, user);
                 console.log(`Document updated by ${user?.name} (${user?.email})`);
             } catch (error) {
@@ -93,6 +93,6 @@ io.on("connection", socket => {
 });
 
 // Start server
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+server.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });

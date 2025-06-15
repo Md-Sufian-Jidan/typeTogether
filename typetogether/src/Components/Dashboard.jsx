@@ -3,12 +3,9 @@ import { Link } from "react-router-dom";
 import { FaPlus, FaShareAlt } from "react-icons/fa";
 import { MdDescription } from "react-icons/md";
 import { v4 as uuid } from 'uuid';
-import { useContext } from "react";
-import { AuthContext } from "../Context/AuthProvider";
+import { Helmet } from "react-helmet";
 
 const Dashboard = () => {
-    const { user } = useContext(AuthContext);
-    console.log(user);
 
     const sharedDocs = [
         { id: "3", title: "Team Strategy" },
@@ -16,6 +13,9 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen bg-background-light p-6">
+            <Helmet>
+                TypeTogether | Dashboard
+            </Helmet>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

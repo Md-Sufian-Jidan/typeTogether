@@ -1,9 +1,9 @@
-.container {
-    width: 60%;
-    background-color: white;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    margin: 30px auto 10px auto !important;
-    min-height: 100vh;
+.documentStyle {
+  width: 60%;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  margin: 30px auto 10px auto !important;
+  min-height: 100vh;
 }
 
 .ql-toolbar.ql-snow {

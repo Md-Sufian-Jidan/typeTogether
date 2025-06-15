@@ -6,16 +6,15 @@ const Error = () => {
     return (
         <>
             <Helmet>
-
                 <title>TypeTogether | 404 Not Found</title>
             </Helmet>
 
-            <div className="flex flex-col items-center justify-center h-screen bg-rose-50 px-4 text-center">
+            <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-violet-50 px-4 text-center">
                 <motion.h1
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.6 }}
-                    className="text-[6rem] font-extrabold text-rose-600 drop-shadow"
+                    className="text-[6rem] font-extrabold text-violet-600 drop-shadow-lg"
                 >
                     404
                 </motion.h1>
@@ -35,7 +34,7 @@ const Error = () => {
                     transition={{ delay: 0.6 }}
                     className="text-gray-500 max-w-md"
                 >
-                    Sorry, the page you're looking for doesn’t exist or has been moved.
+                    Sorry, the page you're looking for doesn't exist or may have been moved.
                 </motion.p>
 
                 <motion.div
@@ -46,7 +45,7 @@ const Error = () => {
                 >
                     <Link
                         to="/"
-                        className="inline-block bg-rose-600 text-white px-6 py-2 rounded-full hover:bg-rose-700 transition"
+                        className="inline-block bg-violet-600 text-white px-6 py-2 rounded-full hover:bg-violet-700 shadow transition"
                     >
                         Back to Home
                     </Link>
@@ -54,6 +53,6 @@ const Error = () => {
             </div>
         </>
     );
-}
+};
 
 export default Error;
